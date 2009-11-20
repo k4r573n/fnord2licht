@@ -158,7 +158,7 @@ int main(int argc, char** argv) {
 	printf("%i %i %i %i\n",addr,red,blue,green);
 
 	int fd = open_port();
-	if !(fd) exit (EXIT_FAILURE);
+	if ( fd > -1 ) exit (EXIT_FAILURE);
   init_port(fd);
 	unsigned int t=0;
 
