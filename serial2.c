@@ -12,6 +12,7 @@
 
 //#include <time.h>
 #include <getopt.h>
+#include <stdlib.h>
 
 #include "./help.c"
 
@@ -119,7 +120,7 @@ void init_port(int fd) {
 }*/
 
 
-int main(int argc, char** argv) {
+int main(int argc, char *argv[]) {
 	//for (int i = 1; i <= argc;i++) {
   extern char *optarg;
   extern int optind, opterr, optopt;
@@ -144,21 +145,22 @@ int main(int argc, char** argv) {
         break;
       case 'v':
         fprintf(stdout,"version 0.2 by Karsten Hinz");
+        exit(0);
         break;
       default: // ?
         fprintf(stderr, "Usage: %s [-a <address>] [-r <red_color_code>] [-g <green_color_code>] [-b <blue_color_code>] [-v]\n", argv[0]);
-                              exit (EXIT_FAILURE);
+        exit(1);
         break;
     }
   }
-}
+
 
 	show_help();
 
 	printf("%i %i %i %i\n",addr,red,blue,green);
 
 	int fd = open_port();
-	if ( fd > -1 ) exit (EXIT_FAILURE);
+	if ( fd > -1 ) exit(1);
   init_port(fd);
 	unsigned int t=0;
 
