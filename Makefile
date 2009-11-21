@@ -16,11 +16,9 @@ SRC_DIRS := .
 SRC_FILES := $(foreach DIR, $(SRC_DIRS), $(wildcard $(DIR)/*.c))
 OBJS := $(patsubst %.c, %.o, $(SRC_FILES))
 
-run: serial2.o
-	./fnord2licht 255 255 255 255
-
 all : $(TARGET)
 	@echo All done
+	./fnord2licht -a 255 -r 255 -g 255 -b 255
 
 $(TARGET) : $(OBJS)
 	$(GCC_COMPILER) $(GCC_COMPILER_FLAGS) -o $@ $^ $(LIBS)
