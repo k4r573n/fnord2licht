@@ -36,6 +36,7 @@ int main(int argc, char *argv[]) {
   extern char *optarg;
   extern int optind, opterr, optopt;
   int opt;
+  char device[] = "/dev/ttxUSB0";//testing
 
 	int addr=255, red=-1, blue=-1, green=-1;//standard werte
 
@@ -70,7 +71,10 @@ int main(int argc, char *argv[]) {
 	printf("%i %i %i %i\n",addr,red,blue,green);
 
 	int fd = open_port();
-	if ( fd > -1 ) exit(1);
+	if ( fd > -1 ) {
+	  fprintf(stderr, "Could not open Device: %s \n", device);
+    exit(1);
+  }
   init_port(fd);
 	unsigned int t=0;
 
