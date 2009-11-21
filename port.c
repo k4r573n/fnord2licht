@@ -10,25 +10,20 @@
 
 
 /*
- * 'open_port()' - Open serial port 1.
+ * 'open_port(device)' - Open the device.
  *
  * Returns the file descriptor on success or -1 on error.
  */
 
-int open_port(void) {
+int open_port(char *device) {
      int fd; /* File descriptor for the port */
 
+    // printf("Device in op:%s\n",device);
 
-     fd = open("/dev/ttyUSB0", O_RDWR | O_NOCTTY | O_NDELAY);
-     if (fd == -1) {
-	    /*
-	     * Could not open the port.
-	     */
-
-	     perror("open_port: Unable to open /dev/ttyUSB0 - ");
-     }
-     else
-	  fcntl(fd, F_SETFL, 0);
+     fd = open(device, O_RDWR | O_NOCTTY | O_NDELAY);
+     if (fd != -1) {//wenn vorhanden
+	      fcntl(fd, F_SETFL, 0);
+	   }
 
      return (fd);
 }
