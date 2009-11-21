@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
 	printf("%i %i %i %i\n",addr,red,blue,green);
 
 	int fd = open_port();
-	if ( fd > -1 ) {
+	if (!( fd > -1 )) {
 	  fprintf(stderr, "Could not open Device: %s \n", device);
     exit(1);
   }

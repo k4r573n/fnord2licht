@@ -19,24 +19,13 @@ int open_port(void) {
      int fd; /* File descriptor for the port */
 
 
-     fd = open("/dev/ttyS0", O_RDWR | O_NOCTTY | O_NDELAY);
+     fd = open("/dev/ttyUSB0", O_RDWR | O_NOCTTY | O_NDELAY);
      if (fd == -1) {
 	    /*
 	     * Could not open the port.
 	     */
 
-	     //try an alternativ divice
-       fd = open("/dev/ttyUSB0", O_RDWR | O_NOCTTY | O_NDELAY);
-	     if (fd == -1) {
-	     	 //Could not open the other port
-	       perror("open_port: Unable to open /dev/ttyUSB0 - ");
-	     }
-       else { //alternativ device works
-	      fcntl(fd, F_SETFL, 0);
-        return (fd);
-	     }
-
-	     perror("open_port: Unable to open /dev/ttyS0 - ");
+	     perror("open_port: Unable to open /dev/ttyUSB0 - ");
      }
      else
 	  fcntl(fd, F_SETFL, 0);
