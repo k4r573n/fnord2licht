@@ -1,10 +1,11 @@
 /* help.c */
 
 /*
- * Here will be the help dialog be
+ * Here will the help dialog be
  */
 
 #include <stdio.h>   /* Standard input/output definitions */
+#include <unistd.h>  /* UNIX standard function definitions */
 
 
 void show_help() {

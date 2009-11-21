@@ -1,5 +1,5 @@
 GCC_COMPILER = gcc
-GCC_COMPILER_FLAGS = -ggdb -Wall
+GCC_COMPILER_FLAGS = -ggdb -Wall -W -pedantic -std=c99
 
 XML_INCS = `xml2-config --cflags`
 XML_LIBS = `xml2-config --libs`
