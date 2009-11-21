@@ -16,6 +16,12 @@ SRC_DIRS := .
 SRC_FILES := $(foreach DIR, $(SRC_DIRS), $(wildcard $(DIR)/*.c))
 OBJS := $(patsubst %.c, %.o, $(SRC_FILES))
 
+an : $(TARGET)
+	./fnord2licht -a 255 -r 255 -g 255 -b 255
+
+aus : $(TARGET)
+	./fnord2licht -a 255 -r 0 -g 0 -b 0
+
 all : $(TARGET)
 	@echo All done
 	./fnord2licht -a 255 -r 255 -g 255 -b 255
