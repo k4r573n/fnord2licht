@@ -17,6 +17,7 @@ extern int open_port(char *device);
 extern void init_port(int fd);
 extern void show_help();
 void send_paket(int fd, int addr, int red, int green, int blue);
+extern void notify(int fd, int addr, int color_channels);
 
 
 /*int msleep(unsigned long milisec)
@@ -57,36 +58,6 @@ void send_paket(int fd, int addr, int red, int green, int blue) {
 	write(fd, a, 1);
 }
 
-/* send a notification
- *
- * color_channels basend on dual numbers
- * 1 for red - 2 for green - 3 for red and green -4 for ...
- *
- */
-void notify(int fd, int addr, int color_channels) {
-  int colors[] = {0,0,0};
-  int cc=color_channels;//zum rechen
-  int i=0;//laufvar
-  int color_intensity=255;
-
-  while ((cc+1) / 2) {
-    colors[i] = (cc % 2) ? color_intensity : 0;//set the color to the channel if there is a rest (1) else 0
-  //  printf("temp:%i mod:%i\n",colors[i],(cc % 2));
-    cc/=2;
-    i++;
-  }
-
-  //printf("\n");
-//  send_paket(fd,addr,colors[0],colors[1],colors[2]);
-
-
-  for (i=0; i<20; i++) {
-    send_paket(fd,addr,colors[0],colors[1],colors[2]);
-    usleep(50000);
-    send_paket(fd,addr,0,0,0);
-    usleep(50000);
-  }
-}
 
 int main(int argc, char *argv[]) {
 	//for (int i = 1; i <= argc;i++) {
@@ -94,12 +65,13 @@ int main(int argc, char *argv[]) {
   extern int optind, opterr, optopt;
   int opt;
   short verbose=0;
+  short noti=0;
   char *device = "/dev/ttyUSB0";//testing
 
 	int addr=255, red=-1, blue=-1, green=-1;//standard werte
 
 	//parameterauswerten
-	while ((opt = getopt(argc, argv, "a:r:g:b:d:hv")) != -1) {
+	while ((opt = getopt(argc, argv, "a:r:g:b:d:n:hv")) != -1) {
     switch (opt) {
       case 'a': // adress
         addr = atoi(optarg);
@@ -115,6 +87,9 @@ int main(int argc, char *argv[]) {
         break;
       case 'd': // device
         device = optarg;
+        break;
+      case 'n': // notify
+        noti=atoi(optarg);
         break;
       case 'v': // verbose
         verbose = 1;
@@ -143,24 +118,19 @@ int main(int argc, char *argv[]) {
   }
   init_port(fd);
 
+  if (noti) {
+    if (verbose) printf("start Notification %i\n",noti);
+    notify(fd,addr,noti);
+    exit(0);
+  }
+
   /*if params are valid*/
   if (blue<0||red<0||green<0) {
 	  fprintf(stderr, "Could not set colors: %i %i %i \n", red,green,blue);
     exit(1);
   }
 
-  for (int i=0; i<8; i++) {
-    notify(fd,addr,i);
-    usleep(1000000);
-  }
-  /*send commands*/
-/*  for (int i=0; i<300; i++) {
-    send_paket(fd,addr,0,255,0);
-    usleep(100);
-    send_paket(fd,addr,0,0,0);
-    usleep(100);
-  }*/
- // send_paket(fd,addr,red,green,blue);
+  send_paket(fd,addr,red,green,blue);
 
 	return 0;     
 }
