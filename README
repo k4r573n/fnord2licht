@@ -1,0 +1,12 @@
+*******************
+** FNORD 2 LICHT **
+*******************
+
+What is it
+-----------
+
+a comandline based tool to control a fnordlight (firmeware "own_")
+
+see http://www.lochraster.org/fnordlicht/ for Hardware details
+
+try fnord2licht -h for more help
