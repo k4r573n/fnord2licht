@@ -11,20 +11,25 @@ INCS = $(XML_INCS)
 LIBS = $(XML_LIBS) $(MISC_LIBS)
 
 TARGET = fnord2licht
+#notify level  - 1..7
+NOTE = 1
 
 SRC_DIRS := .
 SRC_FILES := $(foreach DIR, $(SRC_DIRS), $(wildcard $(DIR)/*.c))
 OBJS := $(patsubst %.c, %.o, $(SRC_FILES))
 
+note : $(TARGET)
+	./fnord2licht -a 255 -r 255 -g 255 -b 255 -v -n $(NOTE)
+
 an : $(TARGET)
-	./fnord2licht -a 255 -r 255 -g 255 -b 255
+	./fnord2licht -a 255 -r 255 -g 255 -b 255 -v
 
 aus : $(TARGET)
-	./fnord2licht -a 255 -r 0 -g 0 -b 0
+	./fnord2licht -a 255 -r 0 -g 0 -b 0 -v
 
 all : $(TARGET)
 	@echo All done
-	./fnord2licht -a 255 -r 255 -g 255 -b 255
+	./fnord2licht -a 255 -r 255 -g 255 -b 255 -v
 
 $(TARGET) : $(OBJS)
 	$(GCC_COMPILER) $(GCC_COMPILER_FLAGS) -o $@ $^ $(LIBS)

@@ -7,7 +7,7 @@
 #include <string.h>  /* String function definitions */
 #include <unistd.h>  /* UNIX standard function definitions */
 
-//#include <time.h>
+#include <time.h>
 #include <getopt.h>
 #include <stdlib.h>
 
@@ -63,15 +63,14 @@ int main(int argc, char *argv[]) {
 	//for (int i = 1; i <= argc;i++) {
   extern char *optarg;
   extern int optind, opterr, optopt;
-  int opt;
+  int opt,fd=-1; //  fd is for the port connection
   short verbose=0;
-  short noti=0;
   char *device = "/dev/ttyUSB0";//testing
 
 	int addr=255, red=-1, blue=-1, green=-1;//standard werte
 
 	//parameterauswerten
-	while ((opt = getopt(argc, argv, "a:r:g:b:d:n:hv")) != -1) {
+	while ((opt = getopt(argc, argv, "a:r:g:b:d:n:Rhv")) != -1) {
     switch (opt) {
       case 'a': // adress
         addr = atoi(optarg);
@@ -88,9 +87,6 @@ int main(int argc, char *argv[]) {
       case 'd': // device
         device = optarg;
         break;
-      case 'n': // notify
-        noti=atoi(optarg);
-        break;
       case 'v': // verbose
         verbose = 1;
         break;
@@ -99,30 +95,45 @@ int main(int argc, char *argv[]) {
         exit(0);
         break;
       default: // ?
-        fprintf(stderr, "Usage: %s [-d <device>] [-a <address>] [-r <red_color_code>] [-g <green_color_code>] [-b <blue_color_code>] [-v] [-h]\n", argv[0]);
-        exit(1);
-        break;
+        /* and now connect and show the effects */
+
+        if (verbose) {//verbose mode
+          printf("Device:%s\n",device);
+	        printf("Light %i ist set to red:%i green:%i blue:%i \n",addr,red,green,blue);
+         }
+
+        /* set/configure output */
+        fd = open_port(device);
+        if (!( fd > -1 )) {
+	        fprintf(stderr, "Could not open Device: %s \n", device);
+          exit(1);
+        }
+        init_port(fd);
+        
+        switch (opt) {
+          case 'R': //set random color
+            if (verbose) printf("set color at random \n");
+            //init random
+            srand( (unsigned) time(NULL) ) ; 
+            //Eine Zufallszahl zwischen a und b (incl. a und b) erzeugt man z.B. mit:
+            //a + ( rand() % ( b - a + 1 ) ) 
+            send_paket(fd,addr,( rand() % ( 255 + 1 ) ),( rand() % ( 255 + 1 ) ),( rand() % ( 255 + 1 ) ));
+            exit(0);
+            break;
+          case 'n': // notify
+            if (verbose) printf("start Notification %i\n",atoi(optarg));
+            notify(fd,addr,atoi(optarg));
+            exit(0);
+            break;
+          default: // ?
+            fprintf(stderr, "Short Usage: %s [-a <address>] [-r <red_color_code>] [-g <green_color_code>] [-b <blue_color_code>]\n\t\t try -h for more information\n", argv[0]);
+            exit(1);
+            break;
+        }
     }
+
   }
 
-  if (verbose) {//verbose mode
-    printf("Device:%s\n",device);
-	  printf("Light %i ist set to red:%i green:%i blue:%i \n",addr,red,green,blue);
-	 }
-
-  /*set/configure output*/
-	int fd = open_port(device);
-	if (!( fd > -1 )) {
-	  fprintf(stderr, "Could not open Device: %s \n", device);
-    exit(1);
-  }
-  init_port(fd);
-
-  if (noti) {
-    if (verbose) printf("start Notification %i\n",noti);
-    notify(fd,addr,noti);
-    exit(0);
-  }
 
   /*if params are valid*/
   if (blue<0||red<0||green<0) {
