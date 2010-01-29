@@ -14,11 +14,15 @@
 //#include "./help.c"
 
 extern int open_port(char *device);
-extern void init_port(int fd);
+extern int init_port(int fd);
 extern void show_help();
-void send_paket(int fd, int addr, int red, int green, int blue);
-extern void notify(int fd, int addr, int color_channels);
 
+extern void powerdown(int addr);
+extern void fade_rgb(int addr, int step, int delay, int red, int green, int blue);
+
+extern void notify(int addr, int color_channels);
+
+int fd=-1;//  fd is for the port connection
 
 /*int msleep(unsigned long milisec)
 {
@@ -32,42 +36,29 @@ extern void notify(int fd, int addr, int color_channels);
     return 1;
 }*/
 
-void send_paket(int fd, int addr, int red, int green, int blue) {
-/*send commands*/
-	unsigned int t=0;
-	char* a=(char*)&t;
-
-	write(fd, "a", 1);
-	t = addr;
-	a = (char*)&t;
-	write(fd, a, 1);
- 
-  write(fd, "r", 1);
-  t = red;
-  a = (char*)&t;
-  write(fd, a, 1);
-
-  write(fd, "g", 1);
-  t = green;	
-  a = (char*)&t;
-  write(fd, a, 1);
-
-	write(fd, "b", 1);
-	t = blue;
-	a = (char*)&t;
-	write(fd, a, 1);
-}
-
 
 int main(int argc, char *argv[]) {
 	//for (int i = 1; i <= argc;i++) {
   extern char *optarg;
   extern int optind, opterr, optopt;
-  int opt,fd=-1; //  fd is for the port connection
+  int opt; 
   short verbose=0;
   char *device = "/dev/ttyUSB0";//testing
 
-	int addr=255, red=-1, blue=-1, green=-1;//standard werte
+	int addr=255, red=255, blue=255, green=255;//standard werte
+
+
+  /* set/configure output */ 
+  open_port(device);
+  init_port(fd);
+            
+  //notify(fd,addr,2);
+
+  fade_rgb(addr, 255, 0, red, green, blue);
+//  powerdown(addr); //send powerdown to broadcast
+
+  close(fd);
+  return 0;
 
 	//parameterauswerten
 	while ((opt = getopt(argc, argv, "a:r:g:b:d:n:Rhv")) != -1) {
@@ -117,15 +108,18 @@ int main(int argc, char *argv[]) {
             srand( (unsigned) time(NULL) ) ; 
             //Eine Zufallszahl zwischen a und b (incl. a und b) erzeugt man z.B. mit:
             //a + ( rand() % ( b - a + 1 ) ) 
-            send_paket(fd,addr,( rand() % ( 255 + 1 ) ),( rand() % ( 255 + 1 ) ),( rand() % ( 255 + 1 ) ));
+            fade_rgb(addr,255,0,( rand() % ( 255 + 1 ) ),( rand() % ( 255 + 1 ) ),( rand() % ( 255 + 1 ) ));
             exit(0);
             break;
           case 'n': // notify
             if (verbose) printf("start Notification %i\n",atoi(optarg));
-            notify(fd,addr,atoi(optarg));
+            notify(addr,atoi(optarg));
             exit(0);
             break;
           default: // ?
+            //set color
+            if ((red!=-1)&&(green!=-1)&&(blue!=-1)) fade_rgb(addr,255,0,red,green,blue);
+
             fprintf(stderr, "Short Usage: %s [-a <address>] [-r <red_color_code>] [-g <green_color_code>] [-b <blue_color_code>]\n\t\t try -h for more information\n", argv[0]);
             exit(1);
             break;
@@ -133,7 +127,8 @@ int main(int argc, char *argv[]) {
     }
 
   }
-
+//bull shit - der code kann nie richtig ausgeführt werden - notify und random mag zwar schein bar gehen
+  // aber nicht wennn irgend ein anderer parameter angegeben wird - da dann aus der abfrage gesprungen wird...
 
   /*if params are valid*/
   if (blue<0||red<0||green<0) {
@@ -141,7 +136,7 @@ int main(int argc, char *argv[]) {
     exit(1);
   }
 
-  send_paket(fd,addr,red,green,blue);
+  fade_rgb(addr,255,0,red,green,blue);
 
 	return 0;     
 }

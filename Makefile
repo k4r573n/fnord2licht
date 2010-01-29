@@ -38,7 +38,7 @@ $(TARGET) : $(OBJS)
 	$(GCC_COMPILER) $(GCC_COMPILER_FLAGS) -o $@ -c $(INCS) $<
 
 edit:
-	vim serial2.c
+	vim *.c
 
 clean :
 	rm -f $(OBJS) $(TARGET)

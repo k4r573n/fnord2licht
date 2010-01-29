@@ -1,10 +1,13 @@
 /* effects.c */
+#include <time.h>
+
+extern void powerdown(int addr);
+extern void fade_rgb(int addr, int step, int delay, int red, int green, int blue);
+
 
 /*
  * Here will all lighteffect funktions be
  */
-
-extern void send_paket(int fd, int addr, int red, int green, int blue);
 
 /* send a notification
  *
@@ -12,7 +15,7 @@ extern void send_paket(int fd, int addr, int red, int green, int blue);
  * 1 for red - 2 for green - 3 for red and green -4 for ...
  *
  */
-void notify(int fd, int addr, int color_channels) {
+void notify(int addr, int color_channels) {
   int colors[] = {0,0,0};//r g b
   int cc=color_channels;//zum rechen
   int i=0;//laufvar
@@ -30,9 +33,9 @@ void notify(int fd, int addr, int color_channels) {
 
   //lustig blinken lassen - ggf noch anpassen
   for (i=0; i<20; i++) {
-    send_paket(fd,addr,colors[0],colors[1],colors[2]);
+    fade_rgb(addr, 255, 0, colors[0],colors[1],colors[2]);
     usleep(50000);
-    send_paket(fd,addr,0,0,0);
+    fade_rgb(addr, 255, 0, colors[0],colors[1],colors[2]);
     usleep(50000);
   }
 }

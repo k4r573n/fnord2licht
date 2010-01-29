@@ -8,6 +8,9 @@
 #include <errno.h>   /* Error number definitions */
 #include <termios.h> /* POSIX terminal control definitions */
 
+#include <string.h>  /* String function definitions */
+
+extern int fd;
 
 /*
  * 'open_port(device)' - Open the device.
@@ -16,16 +19,21 @@
  */
 
 int open_port(char *device) {
-     int fd; /* File descriptor for the port */
+    // int fd; fd is a global var /* File descriptor for the port */
 
     // printf("Device in op:%s\n",device);
 
-     fd = open(device, O_RDWR | O_NOCTTY | O_NDELAY);
-     if (fd != -1) {//wenn vorhanden
-	      fcntl(fd, F_SETFL, 0);
-	   }
+	fd = open(device, O_RDWR | O_NOCTTY | O_NDELAY);
+	if (fd == -1) {
+		perror("open_port: Unable to open - ",  device);
+//		fprintf(stderr, "open_port: Unable to open Device (%s) \n", device);
+		exit(1);
+		return -1;
+	} else {
+		fcntl(fd, F_SETFL, 0);
+	}
 
-     return (fd);
+	return 0;
 }
 
 /*
@@ -36,7 +44,7 @@ int open_port(char *device) {
  */
 
 
-void init_port(int fd) {
+int init_port(int fd) {
 	struct termios options;
 
 /*
@@ -58,17 +66,12 @@ void init_port(int fd) {
 
 	options.c_cflag |= (CLOCAL | CREAD);
 
-/*
- * Set the new options for the port...
- */
-
-	tcsetattr(fd, TCSANOW, &options);
 
 	options.c_cflag &= ~CSIZE; /* Mask the character size bits */
 	options.c_cflag |= CS8;    /* Select 8 data bits */
 
 	options.c_cflag &= ~PARENB;
-	options.c_cflag &= ~CSTOPB;
+	options.c_cflag &= 0;//~CSTOPB; //STOPBITS 1==0; 2==CSTOPB
 	options.c_cflag &= ~CSIZE;
 	options.c_cflag |= CS8;
 
@@ -78,5 +81,12 @@ void init_port(int fd) {
 
 	options.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
 
+/*
+ * Set the new options for the port...
+ */
+
+	tcsetattr(fd, TCSANOW, &options);
+  
+  return 1;
 }
 
