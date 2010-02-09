@@ -13,7 +13,7 @@ int byte_index=0;
 
 //sends a byte of bits to the device fd
 void send_byte(unsigned int value, char* comment) {
-	fprintf(stdout, "byte %d (%s) \n",byte_index,comment);
+	fprintf(stdout, "byte %02d   0x%02x   (%s) \n",byte_index,value,comment);
 	char* a = (char*)&value;
 	if (0 > write(fd, a, 1)) { //returns -1 on fail otherwise bytes send
 	  fprintf(stderr, "write() of byte %d failed!\n", byte_index);
