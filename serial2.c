@@ -11,23 +11,16 @@
 #include <getopt.h>
 #include <stdlib.h>
 
-//#include "./help.c"
-#include "./fnordlicht.h"
+#include "./port.h"
+#include "./effects.h"
+#include "./libfnordlicht.h"
 
 #include <fcntl.h>   /* File control definitions */
 #include <errno.h>   /* Error number definitions */
 #include <termios.h> /* POSIX terminal control definitions */
 
-
-
-extern int open_port(char *device);
-extern int init_port(int fd);
 extern void show_help();
 
-
-extern void notify(int addr, int color_channels);
-
-extern int fd;//  fd is for the port connection
 
 int getinfo(int fd) {
 	struct termios termAttr;

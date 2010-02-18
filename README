@@ -5,7 +5,8 @@
 What is it
 -----------
 
-a comandline based tool to control a fnordlight (firmeware "own_")
+a comandline tool written in c to control a light "Fnordlicht" (firmeware v0.3)
+http://github.com/fd0/fnordlicht/tree/master/fnordlicht-firmware/
 
 see http://www.lochraster.org/fnordlicht/ for Hardware details
 
