@@ -1,3 +1,4 @@
+/* vim ts=4 noexpandtab sw=4 */
 /* help.c */
 
 /*

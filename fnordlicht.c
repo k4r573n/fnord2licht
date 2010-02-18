@@ -1,3 +1,4 @@
+/* vim ts=4 noexpandtab sw=4 */
 /* fnordlicht.c */
 
 /*	hier sind die Funktionen zum ansteuern eines
@@ -21,6 +22,16 @@ void send_byte(unsigned int value, char* comment) {
 	byte_index++;
 }
 
+void sync(void) {
+	fprintf(stdout, "sends sync sequence to %d \n", fd);
+  byte_index=0;//init new package
+
+	for (int i=0; i<=14; i++) {
+	 	//send some bytes to complete the pakege
+		send_byte(0x1b,"ESC");
+	}
+  send_byte(0x00,"address");
+}
 
 /** sendet ein Paket zum farben wechseln des Fnordlichts mit der Firmware 0.3
   */
@@ -242,7 +253,7 @@ void powerdown(int addr) {
 	//sendet die addresse (255 = broadcast)
 	send_byte(addr,"addr");
 	//send the command
-	send_byte(0x01,"cmd - powerdown");
+	send_byte(0x0c,"cmd - powerdown");
 	for (int i=2; i<=14; i++) {
 	 	//send some bytes to complete the pakege
 		send_byte(0x00,"dosen't matter");
