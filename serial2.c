@@ -31,7 +31,7 @@ int getinfo(int fd) {
 	printf("c_iflag=%d\n",termAttr.c_iflag);
 	printf("c_oflag=%d\n",termAttr.c_oflag);
 	printf("c_lflag=%d\n",termAttr.c_lflag);
-	printf("c_cc=%d\n",termAttr.c_cc);
+	//printf("c_cc=%d\n",termAttr.c_cc);
 	printf("c_ispeed=%d\n",termAttr.c_ispeed);
 	printf("c_ospeed=%d\n",termAttr.c_ospeed);
 
@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
 	short verbose=0;
 	char *device = "/dev/ttyUSB0";//testing
 
-	int addr=255,notif=0,
+	int addr=255,notif=0,poweroff=0,
 		 red=( rand() % ( 255 + 1 ) ),
 		 blue=( rand() % ( 255 + 1 ) ),
 		 green=( rand() % ( 255 + 1 ) );//standard werte (random)
@@ -90,7 +90,7 @@ int main(int argc, char *argv[]) {
 	return 0;
 */
 	//parameterauswerten
-	while ((opt = getopt(argc, argv, "a:r:g:b:d:n:hv")) != -1) {
+	while ((opt = getopt(argc, argv, "a:r:g:b:d:n:hpv")) != -1) {
 		switch (opt) {
 			case 'a': // adress
 				addr = atoi(optarg);
@@ -109,6 +109,9 @@ int main(int argc, char *argv[]) {
 				break;
 			case 'd': // device
 				device = optarg;
+				break;
+			case 'p': // powerdown
+				poweroff = 1;
 				break;
 			case 'v': // verbose
 				verbose = 1;
@@ -141,6 +144,9 @@ int main(int argc, char *argv[]) {
 		printf("noti1\n");
 		if (verbose) printf("start Notification %i\n",notif);
 		notify(addr,notif);
+	}else if (poweroff) {
+	  printf("poweroff \n");
+	  powerdown(addr);
 	}else{
              printf("not noti\n");
 		//set color

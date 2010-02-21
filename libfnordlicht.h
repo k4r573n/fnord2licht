@@ -1,5 +1,7 @@
 /* vim ts=4 noexpandtab sw=4 */
-/* fnordlicht.h */
+/* libfnordlicht.h */
+
+/* INCOMPLETE */
 
 //file to include to use the fnordlicht funktions
 

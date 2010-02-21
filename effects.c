@@ -1,7 +1,7 @@
 // vim: sw=8:ts=8:noexpandtab
 /* effects.c */
 #include <time.h>
-#include "./fnordlicht.h"
+#include "./libfnordlicht.h"
 
 
 /*

@@ -1,9 +1,9 @@
 /* vim ts=4 noexpandtab sw=4 */
-/* fnordlicht.c */
+/* libfnordlicht.c */
 
-/*	hier sind die Funktionen zum ansteuern eines
- *	Fnordlichts mit der Firmware 0.3 drin
- * 
+/* INCOMPLETE */
+
+/*	here are the functions to controle a Fnordlicht with the Firmware 0.3
  */
 
 #include <stdio.h>   /* Standard input/output definitions */
@@ -25,8 +25,9 @@ void send_byte(unsigned int value, char* comment) {
 void sync(void) {
 	fprintf(stdout, "sends sync sequence to %d \n", fd);
   byte_index=0;//init new package
+  int i;
 
-	for (int i=0; i<=14; i++) {
+	for (i=0; i<=14; i++) {
 	 	//send some bytes to complete the pakege
 		send_byte(0x1b,"ESC");
 	}
@@ -54,7 +55,8 @@ void fade_rgb(int addr, int step, int delay, int red, int green, int blue) {
 	send_byte(green,"green");
 	//send blue
 	send_byte(blue,"blue");
-	for (int i=7; i<=14; i++) {
+  int i;
+	for (i=7; i<=14; i++) {
 	 	//send some bytes to complete the pakege
 		send_byte(0x00,"dosen't matter");
 	}
@@ -82,7 +84,8 @@ void fade_hsv(int addr, int step, int delay, int hue, int saturation, int value)
 	send_byte(saturation,"saturation");
 	//send value of brigthness
 	send_byte(value,"brightness");
-	for (int i=8; i<=14; i++) {
+  int i;
+	for (i=8; i<=14; i++) {
 	 	//send some bytes to complete the pakege
 		send_byte(0x00,"dosen't matter");
 	}
@@ -113,7 +116,8 @@ void save_rgb(int addr, int slot, int step, int delay, int pause, int red, int g
 	send_byte(green,"green");
 	//send blue
 	send_byte(blue,"blue");
-	for (int i=10; i<=14; i++) {
+  int i;
+	for (i=10; i<=14; i++) {
 	 	//send some bytes to complete the pakege
 		send_byte(0x00,"dosen't matter");
 	}
@@ -145,7 +149,8 @@ void save_hsv(int addr, int slot, int step, int delay, int pause, int hue, int s
 	send_byte(saturation,"saturation");
 	//send value
 	send_byte(value,"value of brightness");
-	for (int i=10; i<=14; i++) {
+  int i;
+	for (i=10; i<=14; i++) {
 	 	//send some bytes to complete the pakege
 		send_byte(0x00,"dosen't matter");
 	}
@@ -170,7 +175,8 @@ void save_current(int addr, int slot, int step, int delay, int pause) {
 	//send pause (2 bytes) TODO: convert the int pause = 0 - 360; to two bytes
 	send_byte(pause,"pause byte 1");
 	send_byte(pause,"pause byte 2");
-	for (int i=7; i<=14; i++) {
+  int i;
+	for (i=7; i<=14; i++) {
 	 	//send some bytes to complete the pakege
 		send_byte(0x00,"dosen't matter");
 	}
@@ -197,7 +203,8 @@ void config_offsets(int addr, int step, int delay, int hue, int saturation, int 
 	send_byte(saturation,"saturation");
 	//send value of brightness
 	send_byte(value,"value of briightness");
-	for (int i=8; i<=14; i++) {
+  int i;
+	for (i=8; i<=14; i++) {
 	 	//send some bytes to complete the pakege
 		send_byte(0x00,"dosen't matter");
 	}
@@ -215,11 +222,12 @@ void start_program(int addr, int program, int params[10]) {
 	send_byte(0x07,"cmd start_program");
 	//send program
 	send_byte(program,"program");
-	for (int i=3; i<=11; i++){
+  int i;
+	for (i=3; i<=11; i++){
   	//send params
 	  send_byte(params[i-3],"params");
 	}
-	for (int i=12; i<=14; i++) {
+	for (i=12; i<=14; i++) {
 	 	//send some bytes to complete the pakege
 		send_byte(0x00,"dosen't matter");
 	}
@@ -237,7 +245,8 @@ void stop(int addr,int fade) {
 	send_byte(0x08,"cmd - stop");
 	//sends fade (0 / 1)
 	send_byte(fade,"fade");
-	for (int i=3; i<=14; i++) {
+  int i;
+	for (i=3; i<=14; i++) {
 	 	//send some bytes to complete the pakege
 		send_byte(0x00,"dosen't matter");
 	}
@@ -254,7 +263,8 @@ void powerdown(int addr) {
 	send_byte(addr,"addr");
 	//send the command
 	send_byte(0x0c,"cmd - powerdown");
-	for (int i=2; i<=14; i++) {
+  int i;
+	for (i=2; i<=14; i++) {
 	 	//send some bytes to complete the pakege
 		send_byte(0x00,"dosen't matter");
 	}
@@ -277,7 +287,8 @@ void config_startup(int addr,int mode, int program, int parameters[10]) {
 	send_byte(program,"program");
 
 	//TODO: send paramets and check the length
-	for (int i=4; i<=14; i++) {
+  int i;
+	for (i=4; i<=14; i++) {
 	 	//send some bytes to complete the pakege
 		send_byte(parameters[i-4],"parametes"); //TODO: line is maybe incorrect
 	}
